@@ -1,0 +1,64 @@
+.row {
+    background-color:#ccc;
+    height: 100vh;
+    min-height:500px;
+}
+
+.row .row {
+    height:50vh;
+    background-color:#cfc;
+}
+
+.container {
+    width:100%;
+}
+
+.artist-image {
+    max-height:50vh;
+}
+
+
+.start {
+    background-color:#F0646E;
+    padding-top:40vh;
+    color:#fff;
+}
+
+.start input {
+    color:#000;
+}
+
+h1 {
+    margin-bottom:1em;
+}
+
+#name {
+    width:300px;
+    text-align:center;
+    margin-bottom:.5em;
+}
+
+#plan {
+    width:300px;
+}
+
+#who-with {
+    padding-top:10vh;
+    background-color:#3C5A8C;
+    color:#fff;
+}
+
+
+.black-hover {
+    display: block;
+    z-index: 3;
+    position: absolute;
+    background:rgba(0,0,0,0.7);
+    color:#fff;
+    width:100%;
+}
+
+#map-canvas {
+    width:100vw;
+    height:100vh;
+}

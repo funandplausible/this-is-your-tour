@@ -15,11 +15,11 @@ class FlickrPhotoRequester:
         self.flickr_api_key = flickr_api_key
 
     def get_photo(self, target_image):
-        raw_response = requests.get("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + self.flickr_api_key + "&text=" + target_image + "&sort=relevance&extras=views,url_o")
+        raw_response = requests.get("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + self.flickr_api_key + "&text=" + target_image + "&sort=relevance&extras=views,url_o,url_c")
         raw_response = raw_response.text
         soup = bs4.BeautifulSoup(raw_response)
         photos = soup.find_all("photo")
-        photos = [(x.attrs["url_o"], x.attrs["views"]) for x in photos if x.attrs.has_key("url_o")]
+        photos = [(x.attrs["url_c"], x.attrs["views"]) for x in photos if x.attrs.has_key("url_o")]
         return sorted(photos, key=lambda x: x[1], reverse=True)[0][0]
 
 photo_requester = FlickrPhotoRequester(os.environ["FLICKR_API_KEY"])
@@ -34,12 +34,12 @@ def artist_info():
         {
             "headliner": {
                 "name": headliner.name,
-                "image": headliner.images[0]["url"],
+                "image": photo_requester.get_photo(headliner.name + " music"),
                 "musicbrainz_id": headliner.get_foreign_id("musicbrainz").replace(":artist", ""),
             },
             "opener": {
                 "name": opener.name,
-                "image": opener.images[0]["url"],
+                "image": photo_requester.get_photo(opener.name + " music"),
                 "musicbrainz_id": opener.get_foreign_id("musicbrainz").replace(":artist", ""),
             },
         }
@@ -92,6 +92,10 @@ def venue_picture():
 @app.route("/city_things", methods=["GET"])
 def city_things():
     raise "todo get from foursquare or yelp"
+
+@app.route("/")
+def index():
+    return open("templates/index.html").read()
 
 if __name__ == "__main__":
     app.debug = True

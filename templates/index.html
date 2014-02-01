@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>
+            This is your tour
+        </title>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="static/css/main.css" rel="stylesheet">
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script src="http://demos.flesler.com/jquery/scrollTo/js/jquery.scrollTo-min.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo6tSNUvwgdDZR-4wVqS52Q859meuVhu8&sensor=true"></script>
+        <script src="static/js/main.js"></script>
+  </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row start">
+                <div class="text-center">
+                    <h1>This is your tour</h1>
+                    <h2>
+                    <input id='name' placeholder='e.g. Ellie Goulding'><br><a href="#" id='plan' class='btn btn-primary'>Plan me a tour!</a>
+                    </h2>
+                    <div id="spinner" style="display:none;">Working</div>
+                </div>
+            </div>
+            <div class="row" style="display:none;" id='who-with'>
+                <div class="text-center">
+                    <h1>You should tour with: <span id='other-party-name'></span></h1>
+                        <div class="text-center" id="other-party">
+                        </div>
+                    <h2 id="other-party-text"></h2>
+                    <a href="javascript:void();" id="show-big-map" class="btn btn-primary">
+                        Party
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="row" style="display:none;" id='places'>
+                <div class="text-center black-hover">
+                    <h1 id="destinations">Oh the places you'll go</h1>
+                </div>
+                <div id="map-canvas">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
