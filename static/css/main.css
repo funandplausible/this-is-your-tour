@@ -247,3 +247,8 @@ h1 {
 a img {
     text-decoration:none;
 }
+
+#final-show {
+    font-family: Yanone Kaffeesatz;
+    font-size:6em;
+}

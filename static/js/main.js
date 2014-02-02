@@ -155,7 +155,7 @@ $(document).ready(function() {
     var location_index = 0;
     function showLocationDialogue() {
         if (location_index == cities.length) {
-            $("#final-show").text($("#name").val() + ": This is your Tour");
+            $("#final-show").text($("#name").val() + ": This is your tour");
             setTimeout(showFinalSlide, 1000);
             return;
         }
