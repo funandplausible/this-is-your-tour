@@ -23,7 +23,9 @@ $(document).ready(function() {
     } ();
 
     $("#name").focus();
-    $("#name").val(QueryString.artist_name.replace("%20", " "));
+    if (typeof(QueryString.artist_name) != 'undefined') {
+        $("#name").val(QueryString.artist_name.replace("%20", " "));
+    }
 
     var artist_ids = [];
     var autoScroll = true;
