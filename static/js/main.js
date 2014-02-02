@@ -87,7 +87,7 @@ $(document).ready(function() {
 
     var cities = [];
 
-    $("#show-big-map").click(function() {
+    function handle_map_show() {
         $("#another-loading").text("Working");
         $.get("/tour_cities?artist_ids=" + artist_ids.join(","), function(response) {
             $("#another-loading").text("");
@@ -141,6 +141,10 @@ $(document).ready(function() {
                 }, location_wind_speed);
             });
         });
+    }
+
+    $("#show-big-map").click(function() {
+        handle_map_show();
     });
 
     function showFinalSlide() {
@@ -230,7 +234,9 @@ $(document).ready(function() {
             var opener = response.opener;
 
             var other_party_copy = "";
+            var me_copy = "";
             var other_party_image = "";
+            var me_image = "";
             artist_ids.push(headliner.musicbrainz_id);
             artist_ids.push(opener.musicbrainz_id);
 
@@ -238,10 +244,14 @@ $(document).ready(function() {
                 other_party_copy = "They're an indie sensation, who'll be opening for you";
                 other_party_image = opener.image;
                 other_party_name = opener.name;
+                me_image = headliner.image;
+                me_copy = headliner.name;
             } else {
                 other_party_copy = "They're a superstar who makes music just like you";
                 other_party_image = headliner.image;
                 other_party_name = headliner.name;
+                me_image = opener.image;
+                me_copy = headliner.name;
             }
 
             $("#who-with").css(
@@ -249,12 +259,25 @@ $(document).ready(function() {
                     "background-image":"url(" + other_party_image +")",
                     "background-size":"cover",
                 }
+            );
+            $("#who-me").css ({
+                "background-image":"url(" + me_image +")",
+                "background-size":"cover",
+                }
             )
-            //$("#other-party").html("<img class='artist-image' src='" + other_party_image + "'>");
-            $("#other-party-text").text(other_party_copy);
-            $("#other-party-name").text(opener.name);
-            $("#who-with").show();
-            scrollTo($("#who-with"));
+            $("#who2").html("<h1>You're " + me_copy + ". Let's plan you a tour!</h1>");
+            $("#who-me").show();
+            scrollTo($("#who-me"));
+            setTimeout(function() {
+                //$("#other-party").html("<img class='artist-image' src='" + other_party_image + "'>");
+                $("#other-party-text").text(other_party_copy);
+                $("#other-party-name").text(opener.name);
+                $("#who-with").show();
+                scrollTo($("#who-with"));
+                setTimeout(function() {
+                    handle_map_show();
+                });
+            }, 3000);
         });
     });
 });

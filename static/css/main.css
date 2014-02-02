@@ -60,13 +60,28 @@ h1 {
     position:relative;
 }
 
+#who-me {
+    padding-top:10vh;
+    background-color:#3C5A8C;
+    color:#fff;
+    position:relative;
+}
+
 
 #who {
     position:absolute;
     top: 0px;
     padding-left:10px;
     background-color:rgba(0,0,0,0.7);
-    padding:1em
+    padding:1em;
+}
+
+#who2 {
+    position:absolute;
+    top: 0px;
+    padding-left:10px;
+    background-color:rgba(0,0,0,0.7);
+    padding:1em;
 }
 
 .bottom-of-parent {
