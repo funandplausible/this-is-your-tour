@@ -252,7 +252,7 @@ $(document).ready(function() {
                     setTimeout(function() {
                         location_index++;
                         showLocationDialogue();
-                    }, 8000);
+                    }, 5000);
                     });
                 });
             });
