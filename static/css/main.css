@@ -190,7 +190,7 @@ h1 {
 }
 
 .large-text {
-    font-size:4em;
+    font-size:3em;
 }
 
 .venue-text {
@@ -253,4 +253,39 @@ a img {
 #final-show {
     font-family: Yanone Kaffeesatz;
     font-size:6em;
+}
+
+#pause {
+    position: fixed;
+    bottom:0px;
+    left:0px;
+    padding:15px;
+    display:none;
+    z-index:5;
+
+}
+
+#pause-butan {
+    color:#fff;
+}
+
+#link-box {
+    color:#000;
+    width:500px;
+    padding:5px 15px;
+    margin-bottom:1em;
+    background-color:rgba(255,255,255,0.2);
+    border:0px;
+    outline: none;
+    box-shadow:none !important;
+    color:#F0646E;
+}
+
+#twitter-link {
+    margin-bottom:2em;
+}
+
+.brightpink {
+    color:#F0646E;
+    font-size:2em;
 }

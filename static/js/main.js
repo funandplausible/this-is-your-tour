@@ -30,7 +30,7 @@ $(document).ready(function() {
 
     function scrollTo(selector) {
         if (autoScroll) {
-            $.scrollTo(selector, 800);
+            $.scrollTo(selector, 1800);
         }
     }
 
@@ -47,11 +47,14 @@ $(document).ready(function() {
 
     function drawLocation(locations, map, i) {
         if (i > 0) {
-            addLineToMap(locations[i-1], locations[i], map);
+            setTimeout(function() {
+                addLineToMap(locations[i-1], locations[i], map);
+            }, 250);
         }
         var marker = new google.maps.Marker({
             map: map,
             position: locations[i],
+            animation: google.maps.Animation.DROP,
         });
     }
 
@@ -174,10 +177,11 @@ $(document).ready(function() {
 
     function showFinalSlide() {
         var build = [
-        '<a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'ve just planned a tour for '+ $("#name").val() +' using This is your Tour http://thisisyourtour.funandplausible.com/?artist_name=' + $("#name").val().replace(" ", "%20") +'" data-via="funandplausible" data-hashtags="musichackday">Tweet</a>',
+        '<a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'ve just planned a tour for '+ $("#name").val() +' using This is your Tour at http://thisisyourtour.funandplausible.com/?artist_name=' + $("#name").val().replace(" ", "%20") +'" data-via="funandplausible" data-hashtags="musichackday">Tweet</a>',
         "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>",
             ].join("\n");
         $("#twitter-link").html(build);
+        $("#link-box").val('http://thisisyourtour.funandplausible.com/?artist_name=' + $("#name").val().replace(" ", "%20"))
         $("#finalslide").show();
         scrollTo($("#finalslide"));
     }
@@ -246,7 +250,7 @@ $(document).ready(function() {
                     setTimeout(function() {
                         location_index++;
                         showLocationDialogue();
-                    }, 1000);
+                    }, 2000);
                     });
                 });
             });
@@ -312,7 +316,7 @@ $(document).ready(function() {
                 scrollTo($("#who-with"));
                 setTimeout(function() {
                     handle_map_show();
-                });
+                }, 3000);
             }, 3000);
         });
     });
