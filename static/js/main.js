@@ -223,6 +223,12 @@ $(document).ready(function() {
         });
     }
 
+    $("#name").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#plan").click();
+        }
+    });
+
     $("#plan").click(function() {
         $("#spinner").show();
         $.get("/artist_info?artist_name=" + $("#name").val(), function(response) {
