@@ -2,11 +2,15 @@ from flask import Flask, request
 from whos_similar import ArtistSimilarityRequester
 from artist_router import ArtistRouter, RouteOptimiser
 from pick_venues import VenueFinder
+from yelp_requester import YelpRequester
 import os
 import json
 import urllib
 import requests
 import bs4
+
+def base_path():
+    return os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 
@@ -19,7 +23,7 @@ class FlickrPhotoRequester:
         raw_response = raw_response.text
         soup = bs4.BeautifulSoup(raw_response)
         photos = soup.find_all("photo")
-        photos = [(x.attrs["url_c"], x.attrs["views"]) for x in photos if x.attrs.has_key("url_o")]
+        photos = [(x.attrs["url_o"], x.attrs["views"]) for x in photos if x.attrs.has_key("url_o")]
         return sorted(photos, key=lambda x: x[1], reverse=True)[0][0]
 
 photo_requester = FlickrPhotoRequester(os.environ["FLICKR_API_KEY"])
@@ -30,20 +34,24 @@ vf = VenueFinder(os.environ["SONGKICK_API_KEY"])
 @app.route("/artist_info", methods=["GET"])
 def artist_info():
     headliner, opener = asr.request_similar_artist(request.args["artist_name"])
-    return json.dumps(
-        {
-            "headliner": {
-                "name": headliner.name,
-                "image": photo_requester.get_photo(headliner.name + " music"),
-                "musicbrainz_id": headliner.get_foreign_id("musicbrainz").replace(":artist", ""),
-            },
-            "opener": {
-                "name": opener.name,
-                "image": photo_requester.get_photo(opener.name + " music"),
-                "musicbrainz_id": opener.get_foreign_id("musicbrainz").replace(":artist", ""),
-            },
-        }
-    )
+    while True:
+        try:
+            return json.dumps(
+                {
+                    "headliner": {
+                        "name": headliner.name,
+                        "image": photo_requester.get_photo(headliner.name + " music"),
+                        "musicbrainz_id": headliner.get_foreign_id("musicbrainz").replace(":artist", ""),
+                    },
+                    "opener": {
+                        "name": opener.name,
+                        "image": photo_requester.get_photo(opener.name + " music"),
+                        "musicbrainz_id": opener.get_foreign_id("musicbrainz").replace(":artist", ""),
+                    },
+                }
+            )
+        except:
+            pass
 
 @app.route("/tour_cities", methods=["GET"])
 def tour_cities():
@@ -80,22 +88,39 @@ def city_venue():
     city = city.split("-")[0]
     index = int(request.args["city_index"])
     venue = vf.get_nth_biggest_venue(city, index)
+    try:
+        venue_image = photo_requester.get_photo(venue["displayName"] + " " + city + " night")
+    except:
+        venue_image =  photo_requester.get_photo(venue["displayName"])
+
     return json.dumps({
         "name": venue["displayName"],
         "songkick_id": venue["id"],
+        "picture_url": venue_image,
     })
 
-@app.route("/venue_picture", methods=["GET"])
-def venue_picture():
-    return json.dumps({"url": photo_requester.get_photo(request.args["venue_name"])})
+
+city_things_cache = {}
 
 @app.route("/city_things", methods=["GET"])
 def city_things():
-    raise "todo get from foursquare or yelp"
+    city = request.args["city_name"]
+    city = city.split("(")[0]
+    state = city.split(" ")[-1]
+    city = " ".join(city.split(" ")[:-1])
+    city = city.split("-")[0]
+    city = city + " " + state
+    yr = YelpRequester()
+
+    categories = ["hotels", "restaraunts", "bars"]
+    if not city in city_things_cache.keys():
+        city_things_cache[city] = {c: yr.find_best_thing(c, city) for c in categories}
+
+    return json.dumps(city_things_cache[city])
 
 @app.route("/")
 def index():
-    return open("templates/index.html").read()
+    return open(base_path() + "templates/index.html").read()
 
 if __name__ == "__main__":
     app.debug = True

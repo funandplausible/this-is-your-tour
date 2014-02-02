@@ -1,7 +1,12 @@
 .row {
     background-color:#ccc;
     height: 100vh;
-    min-height:500px;
+    margin:0px;
+}
+
+.container {
+    margin:0px;
+    padding:0px;
 }
 
 .row .row {
@@ -57,8 +62,41 @@ h1 {
     color:#fff;
     width:100%;
 }
+.black-hover-bottom {
+    display: block;
+    z-index: 3;
+    position: absolute;
+    bottom:0;
+    right:0;
+    text-align:right;
+    width:100%;
+    background:rgba(0,0,0,0.7);
+    color:#fff;
+    width:100%;
+}
 
 #map-canvas {
     width:100vw;
     height:100vh;
+}
+
+.noverflow img {
+    max-width:100%;
+    max-height:100%;
+}
+
+.thing-icon {
+    border-radius:50%;
+    border: 1px solid #000;
+    padding:10px;
+    background-color:#000;
+    margin-right:10px;
+    height:50px;
+    width:50px;
+}
+
+.thing-icon img {
+    -webkit-filter: invert(1);
+    height:30px;
+    width:30px;
 }
