@@ -120,7 +120,7 @@ def city_things():
 
 @app.route("/")
 def index():
-    return open(base_path() + "templates/index.html").read()
+    return open(base_path() + "/" + "templates/index.html").read()
 
 if __name__ == "__main__":
     app.debug = True
