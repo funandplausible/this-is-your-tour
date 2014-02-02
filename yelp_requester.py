@@ -1,18 +1,24 @@
 import requests
+import subprocess
 from bs4 import BeautifulSoup
+from urllib2 import urlopen
+
+def get_url(url):
+    return urlopen(url).read()
 
 class YelpRequester:
     def find_best_thing(self, category, place):
         root_url = "http://www.yelp.co.uk/search?find_desc=" + category + "&find_loc=" + place + "&ns=1&#sortby=rating"
-        print root_url
         root_url = root_url.replace(" ", "%20")
-        response = requests.get(root_url).text
+        print root_url
+        response = get_url(root_url)
+        print response
         soup = BeautifulSoup(response)
         best_place = soup.findAll(attrs={"class":"biz-name"})[1]
-        next_url = "http://www.yelp.co.uk/" + best_place.attrs["href"]
+        next_url = "http://www.yelp.com/" + best_place.attrs["href"]
         next_url = next_url.replace(" ", "%20")
         print next_url
-        response = requests.get(next_url).text
+        response = get_url(next_url)
         soup = BeautifulSoup(response)
         if list(soup.findAll(attrs={"id":"bizUrl"})):
             url = "http://" + list(soup.findAll(attrs={"id":"bizUrl"})[0].children)[1].text
