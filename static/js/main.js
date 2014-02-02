@@ -1,5 +1,30 @@
 $(document).ready(function() {
-    console.log("bees");
+    var QueryString = function () {
+        // This function is anonymous, is executed immediately and
+        // the return value is assigned to QueryString!
+        var query_string = {};
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            // If first entry with this name
+            if (typeof query_string[pair[0]] === "undefined") {
+                query_string[pair[0]] = pair[1];
+                // If second entry with this name
+            } else if (typeof query_string[pair[0]] === "string") {
+                var arr = [ query_string[pair[0]], pair[1] ];
+                query_string[pair[0]] = arr;
+                // If third or later entry with this name
+            } else {
+                query_string[pair[0]].push(pair[1]);
+            }
+        }
+        return query_string;
+    } ();
+
+    $("#name").focus();
+    $("#name").val(QueryString.artist_name.replace("%20", " "));
+
     var artist_ids = [];
     var autoScroll = true;
 
@@ -148,6 +173,11 @@ $(document).ready(function() {
     });
 
     function showFinalSlide() {
+        var build = [
+        '<a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'ve just planned a tour for '+ $("#name").val() +' using This is your Tour http://thisisyourtour.funandplausible.com/?artist_name=' + $("#name").val().replace(" ", "%20") +'" data-via="funandplausible" data-hashtags="musichackday">Tweet</a>',
+        "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>",
+            ].join("\n");
+        $("#twitter-link").html(build);
         $("#finalslide").show();
         scrollTo($("#finalslide"));
     }

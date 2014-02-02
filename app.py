@@ -20,12 +20,15 @@ class FlickrPhotoRequester:
         self.flickr_api_key = flickr_api_key
 
     def get_photo(self, target_image):
-        raw_response = requests.get("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + self.flickr_api_key + "&text=" + target_image + "&sort=relevance&extras=views,url_o,url_c")
-        raw_response = raw_response.text
-        soup = bs4.BeautifulSoup(raw_response)
-        photos = soup.find_all("photo")
-        photos = [(x.attrs["url_o"], x.attrs["views"]) for x in photos if x.attrs.has_key("url_o")]
-        return sorted(photos, key=lambda x: x[1], reverse=True)[0][0]
+        r = redis.StrictRedis(host='localhost', port=6379, db=0)
+        if not r.get("flickr:" + target_image):
+            raw_response = requests.get("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + self.flickr_api_key + "&text=" + target_image + "&sort=relevance&extras=views,url_o,url_c")
+            raw_response = raw_response.text
+            soup = bs4.BeautifulSoup(raw_response)
+            photos = soup.find_all("photo")
+            photos = [(x.attrs["url_o"], x.attrs["views"]) for x in photos if x.attrs.has_key("url_o")]
+            r.set("flickr:" + target_image, sorted(photos, key=lambda x: x[1], reverse=True)[0][0])
+        return r.get("flickr:" + target_image)
 
 photo_requester = FlickrPhotoRequester(os.environ["FLICKR_API_KEY"])
 asr = ArtistSimilarityRequester(os.environ["ECHO_NEST_API_KEY"])
