@@ -229,3 +229,7 @@ h1 {
     height:1em;
     color:#fff;
 }
+
+a img {
+    text-decoration:none;
+}

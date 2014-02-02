@@ -35,20 +35,25 @@ vf = VenueFinder(os.environ["SONGKICK_API_KEY"])
 @app.route("/artist_info", methods=["GET"])
 def artist_info():
     headliner, opener = asr.request_similar_artist(request.args["artist_name"])
-    return json.dumps(
-        {
-            "headliner": {
-                "name": headliner.name,
-                "image": photo_requester.get_photo(headliner.name + " music"),
-                "musicbrainz_id": headliner.get_foreign_id("musicbrainz").replace(":artist", ""),
-            },
-            "opener": {
-                "name": opener.name,
-                "image": photo_requester.get_photo(opener.name + " music"),
-                "musicbrainz_id": opener.get_foreign_id("musicbrainz").replace(":artist", ""),
-            },
-        }
-    )
+    while True:
+        try:
+            return json.dumps(
+                {
+                    "headliner": {
+                        "name": headliner.name,
+                        "image": photo_requester.get_photo(headliner.name + " music"),
+                        "musicbrainz_id": headliner.get_foreign_id("musicbrainz").replace(":artist", ""),
+                    },
+                    "opener": {
+                        "name": opener.name,
+                        "image": photo_requester.get_photo(opener.name + " music"),
+                        "musicbrainz_id": opener.get_foreign_id("musicbrainz").replace(":artist", ""),
+                    },
+                }
+            )
+        except AttributeError:
+            pass
+
 
 @app.route("/tour_cities", methods=["GET"])
 def tour_cities():
