@@ -8,6 +8,7 @@ import json
 import urllib
 import requests
 import bs4
+import redis
 
 def base_path():
     return os.path.dirname(os.path.abspath(__file__))
@@ -108,11 +109,13 @@ def city_things():
     city = city + " " + state
     yr = YelpRequester()
 
-    categories = ["hotels", "restaraunts", "bars"]
-    if not city in city_things_cache.keys():
-        city_things_cache[city] = {c: yr.find_best_thing(c, city) for c in categories}
+    r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-    return json.dumps(city_things_cache[city])
+    categories = ["hotels", "restaraunts", "bars"]
+    if r.get(city) is None:
+        r.set(city, json.dumps({c: yr.find_best_thing(c, city) for c in categories}))
+
+    return r.get(city)
 
 @app.route("/")
 def index():
@@ -120,4 +123,4 @@ def index():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run()
+    app.run(processes=25)

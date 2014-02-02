@@ -66,13 +66,29 @@ class RouteOptimiser:
         self.cities = cities
 
     def optimise_route(self):
-        return self.parse_routes(self.request_optimal_locations(self.cities))
+        return self.wind_nearest_neighbor(self.gecode(self.cities))
 
-    def parse_routes(self, response):
-        return [self.cities[x] for x in response["routes"][0]["waypoint_order"]]
+    def wind_nearest_neighbor(self, geocoded_cities):
+        route = []
+        route.append(geocoded_cities.pop())
+        while len(geocoded_cities) > 0:
+            current_location = route[-1]["latlong"]
+            best = min(geocoded_cities, key=lambda x: self.distance(current_location, x["latlong"]))
+            geocoded_cities.remove(best)
+            route.append(best)
 
-    def request_optimal_locations(self, cities):
-        return json.loads(requests.get("http://maps.googleapis.com/maps/api/directions/json?waypoints=optimize:true|" + "|".join(cities) + "&sensor=false").text)
+        return [x["city"] for x in route]
+
+    def distance(self, location1, location2):
+        return (location1["lat"]-location2["lat"])**2 + (location1["lng"]-location2["lng"])**2
+
+    def gecode(self, cities):
+        build = []
+        for city in cities:
+            jd = requests.get("http://maps.googleapis.com/maps/api/geocode/json?address="+city+"&sensor=false").json()
+            build.append({"city":city, "latlong":jd["results"][0]["geometry"]["location"]})
+
+        return build
 
 
 if __name__ == "__main__":

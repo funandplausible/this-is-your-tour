@@ -1,9 +1,12 @@
 $(document).ready(function() {
     console.log("bees");
     var artist_ids = [];
+    var autoScroll = true;
 
     function scrollTo(selector) {
-        $.scrollTo(selector, 800);
+        if (autoScroll) {
+            $.scrollTo(selector, 800);
+        }
     }
 
     function addLineToMap(start, end, map) {
@@ -40,10 +43,30 @@ $(document).ready(function() {
             "bars"        : "Drink at",
         }
 
-        var build = "";
+
+        var images = "";
+        var texts = "";
         $.each(response, function(key, value) {
-            build += '<div class="thing-icon"><img  src="' + category_icons[key] + '"></div>' + category_copy[key] + ' <a href="' + value.url + '">' + value.name + '</a><br>';
+            images += '<img class="thing-icon"  src="' + category_icons[key] + '">',
+            texts += [
+                "<div class='thing-text'>",
+                category_copy[key],
+                ' <a href="' + value.url + '">',
+                value.name,
+                '</a>',
+                "</div>",
+            ].join("\n");
+
         });
+
+        build = [
+            '<div class="thing-to-do">',
+            '<div class="thing-to-do-images">',
+            images,
+            '</div><hr>',
+            texts,
+            '</div>',
+        ].join("\n");
 
         return build;
     }
@@ -65,7 +88,9 @@ $(document).ready(function() {
     var cities = [];
 
     $("#show-big-map").click(function() {
+        $("#another-loading").text("Working");
         $.get("/tour_cities?artist_ids=" + artist_ids.join(","), function(response) {
+            $("#another-loading").text("");
             if (typeof(response) === "string") {
                 response = JSON.parse(response);
             }
@@ -82,6 +107,17 @@ $(document).ready(function() {
             };
 
             cities = response.order;
+            for (i = 0; i < cities.length; i++) {
+                var location_name = cities[i];
+
+                (function(location_name) {
+                    $.get("/city_things?city_name=" + location_name, function(response) {
+                        console.log("cached" + location_name)
+                    });
+                })(location_name);
+            }
+
+            var location_wind_speed = 1000;
 
             var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
             var coded_places = 0;
@@ -102,7 +138,7 @@ $(document).ready(function() {
                         drawLocation(locations, map, i);
                         i++;
                     }
-                }, 1000);
+                }, location_wind_speed);
             });
         });
     });
@@ -115,7 +151,8 @@ $(document).ready(function() {
     var location_index = 0;
     function showLocationDialogue() {
         if (location_index == cities.length) {
-            showFinalSlide();
+            $("#final-show").text($("#name").val() + ": This is your Tour");
+            setTimeout(showFinalSlide, 1000);
             return;
         }
         var location_name = cities[location_index];
@@ -144,7 +181,11 @@ $(document).ready(function() {
                             response = JSON.parse(response);
                         }
                         var div_id = "locations_" + location_index;
+                        var title_id = "title" + location_index;
                         var templated = [
+                        "<div id='" + title_id + "' class='text-center location-title'>",
+                        "<h1>Stop " + (location_index+1) + ": " + location_name + "</h1>",
+                        "</div>",
                         "<div id='" + div_id + "' class='row'>",
                         "<div class='row'>",
                         "<div class='col-md-6 noverflow' style='background:url(" + city_picture_url +"); background-size:cover; height:50vh; padding:0px;'>",
@@ -154,11 +195,14 @@ $(document).ready(function() {
                         "</div>",
                         "</div>",
                         "<div class='row'>",
-                        "<div class='col-md-6 noverflow' height: 50vh;'>",
+                        "<div class='col-md-6 noverflow middlish' height: 50vh;'>",
+                        "<div class='middleish-inner'>",
+                        "<h1>Things to do</h1>",
                         go_to_places(response),
                         "</div>",
+                        "</div>",
                         "<div class='col-md-6 noverflow' style='background:url(" + venue_picture_url +"); background-size:cover; height:50vh; padding:0px;'>",
-                        "<div class='black-hover-bottom'>The venue: " + venue_name + "</div>",
+                        "<div class='black-hover-bottom venue-text'>The venue: " + venue_name + "</div>",
                         "</div>",
                         "</div>",
                         "</div>",
