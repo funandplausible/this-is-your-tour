@@ -278,7 +278,7 @@ a img {
     border:0px;
     outline: none;
     box-shadow:none !important;
-    color:#F0646E;
+    color:#fff;
 }
 
 #twitter-link {
@@ -286,6 +286,6 @@ a img {
 }
 
 .brightpink {
-    color:#F0646E;
+    color:#fff;
     font-size:2em;
 }
