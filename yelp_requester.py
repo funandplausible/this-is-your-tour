@@ -10,14 +10,11 @@ class YelpRequester:
     def find_best_thing(self, category, place):
         root_url = "http://www.yelp.co.uk/search?find_desc=" + category + "&find_loc=" + place + "&ns=1&#sortby=rating"
         root_url = root_url.replace(" ", "%20")
-        print root_url
         response = get_url(root_url)
-        print response
         soup = BeautifulSoup(response)
         best_place = soup.findAll(attrs={"class":"biz-name"})[1]
         next_url = "http://www.yelp.com/" + best_place.attrs["href"]
         next_url = next_url.replace(" ", "%20")
-        print next_url
         response = get_url(next_url)
         soup = BeautifulSoup(response)
         if list(soup.findAll(attrs={"id":"bizUrl"})):
@@ -25,7 +22,6 @@ class YelpRequester:
         else:
             url = ""
 
-        print url
 
         return {"name": best_place.text, "url": url}
 

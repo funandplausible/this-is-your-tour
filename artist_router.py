@@ -36,13 +36,11 @@ class ArtistRouter:
 
     def retreive_cities(self, artist_name):
 
-        print "http://api.semetric.com/artist/" + artist_name + "/downloads/bittorrent/location/city?token=" + self.api_key
         raw_response = json.loads(
             requests.get(
                 "http://api.semetric.com/artist/" + artist_name + "/downloads/bittorrent/location/city?token=" + self.api_key
             ).content
         )
-        print raw_response
 
         if raw_response["success"]:
             return [self.build_location_dict(location) for location in raw_response["response"]["data"]]
@@ -81,6 +79,7 @@ class RouteOptimiser:
             geocoded_cities.remove(best)
             route.append(best)
 
+        print [ x["latlong"] for x in route ]
         return [x["city"] for x in route]
 
     def distance(self, location1, location2):
@@ -88,10 +87,8 @@ class RouteOptimiser:
 
     def gecode(self, cities):
         build = []
-        print cities
         for city in cities:
             jd = requests.get("http://maps.googleapis.com/maps/api/geocode/json?address="+city+"&sensor=false").json()
-            print jd
             build.append({"city":city, "latlong":jd["results"][0]["geometry"]["location"]})
 
         return build
