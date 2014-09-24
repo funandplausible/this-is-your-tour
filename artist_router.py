@@ -73,6 +73,7 @@ class RouteOptimiser:
 
     def wind_nearest_neighbor(self, geocoded_cities):
         route = []
+        geocoded_cities = sorted(geocoded_cities, key=lambda x:x["latlong"]["lng"])
         route.append(geocoded_cities.pop())
         while len(geocoded_cities) > 0:
             current_location = route[-1]["latlong"]
