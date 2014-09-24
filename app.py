@@ -22,7 +22,8 @@ class FlickrPhotoRequester:
     def get_photo(self, target_image):
         r = redis.StrictRedis(host='localhost', port=6379, db=0)
         if not r.get("flickr:" + target_image):
-            raw_response = requests.get("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + self.flickr_api_key + "&text=" + target_image + "&sort=relevance&extras=views,url_o,url_c")
+            target_image = urllib.quote(target_image)
+            raw_response = requests.get("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + self.flickr_api_key + "&text=" + target_image + "&sort=relevance&extras=views,url_o,url_c")
             raw_response = raw_response.text
             soup = bs4.BeautifulSoup(raw_response)
             photos = soup.find_all("photo")

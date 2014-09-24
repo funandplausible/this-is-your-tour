@@ -19,7 +19,7 @@ class ArtistSimilarityRequester:
         if self.artist.familiarity > self.indie_threshold:
             self.headliner = self.artist
             similar_artists = self.artist.get_similar(max_familiarity=self.indie_threshold, min_hotttnesss=0.7)
-            self.opener = [x for x in similar_artists if x.name == "Ilse DeLange"][0]
+            self.opener = [x for x in similar_artists][0]
         else:
             self.opener = self.artist
             self.headliner = choice(self.artist.get_similar(min_familiarity=self.indie_threshold, min_hotttnesss=0.7))
